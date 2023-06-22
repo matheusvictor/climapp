@@ -23,8 +23,14 @@
           </button>
         </div>
       </header>
-      <main class="clima__conteudo">
-        <!-- Complete a estrutura -->
+      <main class="clima__conteudo" v-if="climaData != null">
+        <h1> {{ climaData.location.name }}, {{ climaData.location.region }} - {{ climaData.location.country }} </h1>
+
+        <img v-bind:src="climaData.current.condition.icon" alt="Condição climática">
+
+        <p>{{ climaData.current.temp_c }}ºC </p>
+        <p>{{ climaData.current.condition.text }} </p>
+      
       </main>
     </div>
   </div>
@@ -55,10 +61,17 @@ export default {
 
       const API_URL = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&lang=pt&q=${formatarLocalizacao}`;
 
-        // Adicionar a chamada da API weatherapi.com
-        // Armazenar o resultado em climaData
-
-      console.log(API_URL);
+      fetch(API_URL)
+        .then((response) => response.json())
+        .then((resultado) => {
+          
+          // Armazenar o resultado em climaData
+          this.climaData = resultado;
+          
+          console.log("Nome da cidade:", this.climaData.location.name);
+          console.log("Temperatura:", this.climaData.current.temp_c);
+      })
+      .catch((error) => console.log(error));
     },
   },
 };
